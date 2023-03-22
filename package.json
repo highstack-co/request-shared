@@ -4,6 +4,7 @@
   "author": "Request",
   "license": "MIT",
   "private": true,
+  "type": "commonjs",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -19,6 +20,12 @@
     "@requestnetwork/types": "0.35.1-next.1787",
     "@requestnetwork/web3-signature": "0.4.36-next.1787",
     "ethers": "5.5.1",
+    "react": "^18.2.0",
+    "react-router-dom": "^6.9.0",
     "wallet-address-validator": "^0.2.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "typescript": "^5.0.2"
   }
 }

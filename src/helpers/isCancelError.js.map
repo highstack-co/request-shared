@@ -1,0 +1,1 @@
+{"version":3,"file":"isCancelError.js","sourceRoot":"","sources":["isCancelError.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,aAAa,GAAG,CAAC,CAAM,EAAE,EAAE;IACtC,OAAO,CACL,CAAC,CAAC,IAAI,KAAK,IAAI;QACf,CAAC,CAAC,OAAO,KAAK,UAAU;QACxB,CAAC,CAAC,OAAO,KAAK,wBAAwB,CACvC,CAAC;AACJ,CAAC,CAAC"}

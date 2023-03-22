@@ -60,10 +60,10 @@ const loadRequest = async (
 };
 
 /** Loads the request and converts the amount to counter currency */
-export const RequestProvider: React.FC<{ chainId?: string | number }> = ({
-  children,
-  chainId,
-}) => {
+export const RequestProvider: React.FC<{
+  children: React.ReactNode;
+  chainId?: string | number;
+}> = ({ children, chainId }) => {
   const { currencyManager } = useCurrency();
 
   const { id } = useParams<{ id?: string }>();
@@ -89,6 +89,7 @@ export const RequestProvider: React.FC<{ chainId?: string | number }> = ({
     if (!id) {
       return;
     }
+    console.log({ id, chainId });
     const result = await loadRequest(id, chainId);
     if (result) {
       const parseResult = await parseRequest({
@@ -110,8 +111,7 @@ export const RequestProvider: React.FC<{ chainId?: string | number }> = ({
 
   // handle rate conversion
   useEffect(() => {
-    if (rate && parsedRequest?.amount)
-      setCounterValue((rate * parsedRequest.amount).toFixed(2));
+    if (rate && parsedRequest?.amount) setCounterValue((rate * parsedRequest.amount).toFixed(2));
     else {
       setCounterValue("");
     }
@@ -125,10 +125,7 @@ export const RequestProvider: React.FC<{ chainId?: string | number }> = ({
         counterCurrency,
         counterValue,
         setPending,
-        update: useCallback(
-          () => fetchRequest(id, chainId, pending),
-          [id, chainId, pending]
-        ),
+        update: useCallback(() => fetchRequest(id, chainId, pending), [id, chainId, pending]),
       }}
     >
       {children}

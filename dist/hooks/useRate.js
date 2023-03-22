@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useRate = void 0;
+const react_1 = require("react");
 /** Load rate conversion between two currencies */
-export const useRate = (currency, counterCurrency) => {
-    const [rate, setRate] = useState();
-    useEffect(() => {
+const useRate = (currency, counterCurrency) => {
+    const [rate, setRate] = (0, react_1.useState)();
+    (0, react_1.useEffect)(() => {
         if (currency && counterCurrency) {
             let curr = currency.symbol;
             fetch(`https://min-api.cryptocompare.com/data/price?fsym=${curr}&tsyms=${counterCurrency}`)
@@ -14,4 +17,5 @@ export const useRate = (currency, counterCurrency) => {
     }, [currency, counterCurrency]);
     return rate;
 };
+exports.useRate = useRate;
 //# sourceMappingURL=useRate.js.map

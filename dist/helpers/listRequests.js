@@ -1,11 +1,14 @@
-import { useCallback } from "react";
-import { IdentityTypes } from "@requestnetwork/types";
-import { EventEmitter } from "events";
-import { parseRequest } from "./parseRequest";
-import { chainIdToName } from "./chainIdToName";
-import { useCurrency } from "../contexts/CurrencyContext";
-import { getRequestClient } from "./client";
-export class BalanceEventEmitter extends EventEmitter {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.listRequests = exports.useListRequests = exports.BalanceEventEmitter = void 0;
+const react_1 = require("react");
+const types_1 = require("@requestnetwork/types");
+const events_1 = require("events");
+const parseRequest_1 = require("./parseRequest");
+const chainIdToName_1 = require("./chainIdToName");
+const CurrencyContext_1 = require("../contexts/CurrencyContext");
+const client_1 = require("./client");
+class BalanceEventEmitter extends events_1.EventEmitter {
     constructor() {
         super(...arguments);
         this._untypedOn = this.on;
@@ -14,18 +17,20 @@ export class BalanceEventEmitter extends EventEmitter {
         this.emit = (event, ...args) => this._untypedEmit(event, ...args);
     }
 }
-export const useListRequests = () => {
-    const { currencyManager } = useCurrency();
-    return useCallback((account, network, isSmartContract = false) => listRequests(account, network, isSmartContract, currencyManager), [currencyManager]);
+exports.BalanceEventEmitter = BalanceEventEmitter;
+const useListRequests = () => {
+    const { currencyManager } = (0, CurrencyContext_1.useCurrency)();
+    return (0, react_1.useCallback)((account, network, isSmartContract = false) => (0, exports.listRequests)(account, network, isSmartContract, currencyManager), [currencyManager]);
 };
-export const listRequests = async (account, network, isSmartContract = false, currencyManager) => {
-    network = chainIdToName(network);
+exports.useListRequests = useListRequests;
+const listRequests = async (account, network, isSmartContract = false, currencyManager) => {
+    network = (0, chainIdToName_1.chainIdToName)(network);
     if (!account) {
         throw new Error("Not connected");
     }
-    const requestNetwork = getRequestClient(network);
+    const requestNetwork = (0, client_1.getRequestClient)(network);
     const requests = await requestNetwork.fromIdentity({
-        type: IdentityTypes.TYPE.ETHEREUM_ADDRESS,
+        type: types_1.IdentityTypes.TYPE.ETHEREUM_ADDRESS,
         value: account,
     }, undefined, {
         disablePaymentDetection: true,
@@ -37,7 +42,7 @@ export const listRequests = async (account, network, isSmartContract = false, cu
     const list = [];
     for (const request of requests) {
         try {
-            const parsedRequest = await parseRequest({
+            const parsedRequest = await (0, parseRequest_1.parseRequest)({
                 requestId: request.requestId,
                 data: request.getData(),
                 network: network,
@@ -62,6 +67,7 @@ export const listRequests = async (account, network, isSmartContract = false, cu
         on: emitter.on,
     };
 };
+exports.listRequests = listRequests;
 const loadBalances = async (requests, sortedRequests, network, emitter, currencyManager) => {
     let i = 0;
     // update balances by batches of 10.
@@ -89,7 +95,7 @@ const loadBalance = async (request, network, currencyManager) => {
     catch (e) {
         return null;
     }
-    const newParsedRequest = await parseRequest({
+    const newParsedRequest = await (0, parseRequest_1.parseRequest)({
         requestId: request.requestId,
         data: request.getData(),
         network,

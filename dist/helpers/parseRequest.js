@@ -1,9 +1,12 @@
-import { utils, BigNumber } from "ethers";
-import { Types } from "@requestnetwork/request-client.js";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseRequest = void 0;
+const ethers_1 = require("ethers");
+const request_client_js_1 = require("@requestnetwork/request-client.js");
 const getStatus = (state, expectedAmount, balance, pending) => {
     if (!balance)
         return "waiting";
-    if (state === Types.RequestLogic.STATE.CANCELED)
+    if (state === request_client_js_1.Types.RequestLogic.STATE.CANCELED)
         return "canceled";
     if (balance === null || balance === void 0 ? void 0 : balance.eq(expectedAmount))
         return "paid";
@@ -14,24 +17,24 @@ const getStatus = (state, expectedAmount, balance, pending) => {
     return "open";
 };
 /** Transforms a request to a more friendly format */
-export const parseRequest = async ({ requestId, data, network, pending, currencyManager, }) => {
+const parseRequest = async ({ requestId, data, network, pending, currencyManager, }) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
     const currency = currencyManager.fromStorageCurrency(data.currencyInfo);
     if (!currency) {
         throw new Error("Currency not found");
     }
-    if (currency.type === Types.RequestLogic.CURRENCY.ISO4217) {
+    if (currency.type === request_client_js_1.Types.RequestLogic.CURRENCY.ISO4217) {
         throw new Error("Unsupported currency");
     }
     const { decimals } = currency;
-    const amount = Number(utils.formatUnits(data.expectedAmount, decimals));
+    const amount = Number(ethers_1.utils.formatUnits(data.expectedAmount, decimals));
     let balance = 0;
     if (((_a = data.balance) === null || _a === void 0 ? void 0 : _a.balance) !== null && ((_b = data.balance) === null || _b === void 0 ? void 0 : _b.balance) !== undefined) {
-        balance = Number(utils.formatUnits(data.balance.balance, decimals));
+        balance = Number(ethers_1.utils.formatUnits(data.balance.balance, decimals));
     }
-    const status = getStatus(data.state, BigNumber.from(data.expectedAmount), ((_c = data.balance) === null || _c === void 0 ? void 0 : _c.balance) ? BigNumber.from(data.balance.balance) : undefined, pending);
+    const status = getStatus(data.state, ethers_1.BigNumber.from(data.expectedAmount), ((_c = data.balance) === null || _c === void 0 ? void 0 : _c.balance) ? ethers_1.BigNumber.from(data.balance.balance) : undefined, pending);
     const paidTimestamp = (_e = (_d = data.balance) === null || _d === void 0 ? void 0 : _d.events.reverse()[0]) === null || _e === void 0 ? void 0 : _e.timestamp;
-    const canceledTimestamp = (_f = data.events.find(x => x.name === Types.RequestLogic.ACTION_NAME.CANCEL)) === null || _f === void 0 ? void 0 : _f.timestamp;
+    const canceledTimestamp = (_f = data.events.find(x => x.name === request_client_js_1.Types.RequestLogic.ACTION_NAME.CANCEL)) === null || _f === void 0 ? void 0 : _f.timestamp;
     const extensionsValues = (_g = Object.values(data.extensions).find(x => x.type === "payment-network")) === null || _g === void 0 ? void 0 : _g.values;
     const paymentParams = (_k = (_j = (_h = data.balance) === null || _h === void 0 ? void 0 : _h.events) === null || _j === void 0 ? void 0 : _j[0]) === null || _k === void 0 ? void 0 : _k.parameters;
     return {
@@ -60,4 +63,5 @@ export const parseRequest = async ({ requestId, data, network, pending, currency
         network,
     };
 };
+exports.parseRequest = parseRequest;
 //# sourceMappingURL=parseRequest.js.map

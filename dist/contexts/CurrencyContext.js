@@ -1,6 +1,10 @@
-import React from "react";
-import { CurrencyManager, } from "@requestnetwork/currency";
-const CurrencyContext = React.createContext(null);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useCurrency = exports.CurrencyProvider = void 0;
+const tslib_1 = require("tslib");
+const react_1 = tslib_1.__importDefault(require("react"));
+const currency_1 = require("@requestnetwork/currency");
+const CurrencyContext = react_1.default.createContext(null);
 // const getCurrencies = (network: number) => {
 //   if (network === 4) {
 //     return {
@@ -19,17 +23,19 @@ const CurrencyContext = React.createContext(null);
 //     };
 //   }
 // };
-export function CurrencyProvider({ children, currencies, }) {
-    const currencyList = currencies.map(CurrencyManager.fromInput);
-    return (React.createElement(CurrencyContext.Provider, { value: { currencyList } }, children));
+function CurrencyProvider({ children, currencies, }) {
+    const currencyList = currencies.map(currency_1.CurrencyManager.fromInput);
+    return (react_1.default.createElement(CurrencyContext.Provider, { value: { currencyList } }, children));
 }
-export const useCurrency = () => {
-    const context = React.useContext(CurrencyContext);
+exports.CurrencyProvider = CurrencyProvider;
+const useCurrency = () => {
+    const context = react_1.default.useContext(CurrencyContext);
     if (!context) {
         throw new Error("This hook must be used inside a CurrencyProvider");
     }
     const { currencyList } = context;
-    const currencyManager = new CurrencyManager(currencyList);
-    return React.useMemo(() => ({ currencyList, currencyManager }), []);
+    const currencyManager = new currency_1.CurrencyManager(currencyList);
+    return react_1.default.useMemo(() => ({ currencyList, currencyManager }), []);
 };
+exports.useCurrency = useCurrency;
 //# sourceMappingURL=CurrencyContext.js.map

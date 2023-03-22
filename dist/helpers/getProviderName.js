@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getProviderName = void 0;
 /** attempt to get the connected wallet. Falls back to the connector name (injected, walletconnect...) */
-export const getProviderName = (connectorName) => {
+const getProviderName = (connectorName) => {
     var _a, _b, _c, _d, _e, _f;
     const provider = window.ethereum;
     if (provider) {
@@ -34,4 +37,5 @@ export const getProviderName = (connectorName) => {
         return connectorName;
     return "unknown";
 };
+exports.getProviderName = getProviderName;
 //# sourceMappingURL=getProviderName.js.map

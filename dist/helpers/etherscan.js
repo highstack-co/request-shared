@@ -1,8 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getEtherscanUrl = void 0;
 const etherscanDomain = {
     goerli: "https://goerli.etherscan.io",
     mainnet: "https://etherscan.io",
 };
-export const getEtherscanUrl = (request) => {
+const getEtherscanUrl = (request) => {
     var _a;
     if (!request) {
         return "";
@@ -16,4 +19,5 @@ export const getEtherscanUrl = (request) => {
         ? etherscanDomain[request.currencyNetwork]
         : "";
 };
+exports.getEtherscanUrl = getEtherscanUrl;
 //# sourceMappingURL=etherscan.js.map

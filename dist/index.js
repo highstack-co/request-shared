@@ -1,9 +1,13 @@
-import { providers, utils } from "ethers";
-export * from "./contexts/RequestContext";
-export * from "./contexts/CurrencyContext";
-export * from "./hooks/useRate";
-export * from "./helpers";
-export const chainInfos = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.addEthereumChain = exports.chainInfos = void 0;
+const tslib_1 = require("tslib");
+const ethers_1 = require("ethers");
+tslib_1.__exportStar(require("./contexts/RequestContext"), exports);
+tslib_1.__exportStar(require("./contexts/CurrencyContext"), exports);
+tslib_1.__exportStar(require("./hooks/useRate"), exports);
+tslib_1.__exportStar(require("./helpers"), exports);
+exports.chainInfos = {
     mainnet: { id: "mainnet", name: "Ethereum", chainId: 1, color: "#038789" },
     xdai: {
         id: "xdai",
@@ -43,15 +47,15 @@ export const chainInfos = {
         },
     },
 };
-export const addEthereumChain = (chain, library) => {
-    const { chainId, name, blockExplorerUrls, rpcUrls, nativeCurrency } = chainInfos[chain] || {};
+const addEthereumChain = (chain, library) => {
+    const { chainId, name, blockExplorerUrls, rpcUrls, nativeCurrency } = exports.chainInfos[chain] || {};
     if (!library) {
-        library = new providers.Web3Provider(window.ethereum);
+        library = new ethers_1.providers.Web3Provider(window.ethereum);
     }
     // first attempt to switch to that chain
     try {
         return library.send("wallet_switchEthereumChain", [
-            { chainId: utils.hexValue(chainId) },
+            { chainId: ethers_1.utils.hexValue(chainId) },
         ]);
     }
     catch (_a) { }
@@ -60,7 +64,7 @@ export const addEthereumChain = (chain, library) => {
     }
     return library.send("wallet_addEthereumChain", [
         {
-            chainId: utils.hexValue(chainId),
+            chainId: ethers_1.utils.hexValue(chainId),
             chainName: name,
             blockExplorerUrls,
             rpcUrls: rpcUrls ? rpcUrls : [],
@@ -68,5 +72,6 @@ export const addEthereumChain = (chain, library) => {
         },
     ]);
 };
-Object.values(chainInfos).forEach((val) => (chainInfos[val.chainId] = val));
+exports.addEthereumChain = addEthereumChain;
+Object.values(exports.chainInfos).forEach((val) => (exports.chainInfos[val.chainId] = val));
 //# sourceMappingURL=index.js.map
