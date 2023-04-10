@@ -1,1 +1,3 @@
 *.DS_Shared
+
+node_modules

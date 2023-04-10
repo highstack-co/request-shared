@@ -11,7 +11,7 @@ exports.useRequestClient = useRequestClient;
 const getRequestClient = (network, signatureProvider, currencyList) => {
     const requestNetwork = new request_client_js_1.RequestNetwork({
         nodeConnectionConfig: {
-            baseURL: `https://${network}.gateway.request.network/`,
+            baseURL: network === "goerli" ? `https://${network}.gateway.request.network/` : `https://xdai.gateway.request.network/`,
         },
         signatureProvider,
         currencies: currencyList,
