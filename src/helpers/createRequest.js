@@ -9,20 +9,26 @@ import { CurrencyManager } from "@requestnetwork/currency";
 import { useCurrency } from "../contexts/CurrencyContext";
 import { utils } from "ethers";
 import { getRequestClient } from "./client";
-export const useCreateRequest = () => {
+export const useCreateRequest = (walletConnectSigner) => {
     const { currencyManager, currencyList } = useCurrency();
     const createRequest = async ({ currencyId, amount, payer, paymentAddress, contentData, topics, }, account, chainId) => {
         const win = window;
-        if (!win.ethereum) {
+        let signatureProvider;
+        if (!win.ethereum && !walletConnectSigner) {
             throw new Error("ethereum not detected");
         }
-        const chainName = chainIdToName(chainId);
-        let signatureProvider = new CustomSignatureProvider(new providers.Web3Provider(window.ethereum).getSigner());
-        if (!win.ethereum.isMetamask) {
-            const { Web3SignatureProvider, } = require("@requestnetwork/web3-signature");
-            signatureProvider = new Web3SignatureProvider(win.ethereum);
+        const { Web3SignatureProvider } = require("@requestnetwork/web3-signature");
+        if (walletConnectSigner) {
+            signatureProvider = new CustomSignatureProvider(walletConnectSigner);
         }
+        else if (!win.ethereum.isMetamask) {
+            signatureProvider = new Web3SignatureProvider(win.ethereum);
+        } else {
+            signatureProvider = new CustomSignatureProvider(new providers.Web3Provider(win.ethereum).getSigner());
+        }
+        const chainName = chainIdToName(chainId);
         const requestNetwork = getRequestClient(chainName, signatureProvider, currencyList);
+
         const currency = currencyManager.fromId(currencyId);
         const isEth = currency.type === RequestLogicTypes.CURRENCY.ETH;
         const paymentNetwork = isEth

@@ -7,4 +7,4 @@ export interface ICreateRequestArgs {
     contentData: any;
     topics?: string[];
 }
-export declare const useCreateRequest: () => ({ currencyId, amount, payer, paymentAddress, contentData, topics, }: ICreateRequestArgs, account: string, chainId: string | number) => Promise<Request>;
+export declare const useCreateRequest: (walletConnectProvider?: any) => ({ currencyId, amount, payer, paymentAddress, contentData, topics, }: ICreateRequestArgs, account: string, chainId: string | number) => Promise<Request>;

@@ -25,7 +25,7 @@ export interface ICreateRequestArgs {
   topics?: string[];
 }
 
-export const useCreateRequest = () => {
+export const useCreateRequest = (walletConnectSigner: any) => {
   const { currencyManager, currencyList } = useCurrency();
 
   const createRequest = async (
@@ -38,27 +38,28 @@ export const useCreateRequest = () => {
       topics,
     }: ICreateRequestArgs,
     account: string,
-    chainId: string | number
+    chainId: string | number,
   ): Promise<Request> => {
     const win = window as any;
-    if (!win.ethereum) {
+    let signatureProvider;
+    if (!win.ethereum && !walletConnectSigner) {
       throw new Error("ethereum not detected");
     }
-    const chainName = chainIdToName(chainId);
-
-    let signatureProvider = new CustomSignatureProvider(
-      new providers.Web3Provider((window as any).ethereum).getSigner()
-    );
-    if (!win.ethereum.isMetamask) {
-      const {
-        Web3SignatureProvider,
-      } = require("@requestnetwork/web3-signature");
+    const { Web3SignatureProvider } = require("@requestnetwork/web3-signature");
+    if (walletConnectSigner) {
+      signatureProvider = new CustomSignatureProvider(walletConnectSigner);
+    } else if (!win.ethereum.isMetamask) {
       signatureProvider = new Web3SignatureProvider(win.ethereum);
+    } else {
+      signatureProvider = new CustomSignatureProvider(
+        new providers.Web3Provider(win.ethereum).getSigner(),
+      );
     }
+    const chainName = chainIdToName(chainId);
     const requestNetwork = getRequestClient(
       chainName,
       signatureProvider,
-      currencyList
+      currencyList,
     );
 
     const currency = currencyManager.fromId(currencyId)!;
@@ -81,7 +82,7 @@ export const useCreateRequest = () => {
     if (payer) {
       if (isValidEns(payer)) {
         const provider = getDefaultProvider(
-          chainName === "goerli" ? "goerli" : "mainnet"
+          chainName === "goerli" ? "goerli" : "mainnet",
         );
         payer = await new ENS(payer, provider).addr();
       } else if (!WalletAddressValidator.validate(payer, "ethereum")) {

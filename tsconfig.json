@@ -3,7 +3,6 @@
     "src"
   ],
   "compilerOptions": {
-    "composite": true,
     "target": "ES2017",
     "module": "commonjs",
     "lib": [
